@@ -116,4 +116,16 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+
+
+    // 🚫 Exclude old support libraries to prevent duplicate classes
+    configurations.all {
+        exclude group: "com.android.support", module: "support-compat"
+        exclude group: "com.android.support", module: "support-v4"
+        exclude group: "com.android.support", module: "support-media-compat"
+        exclude group: "com.android.support", module: "support-core-utils"
+    }
 }
+
+
+apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle")
