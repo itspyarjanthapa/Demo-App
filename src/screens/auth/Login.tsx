@@ -39,7 +39,11 @@ const Login = () => {
 
         <View style={styles.inptufeild}>
           <FontAwesome name="lock" size={20} color="#5c6cf8ff" />
-          <TextInput textContentType="password" placeholder="Password" />
+          <TextInput
+            textContentType="password"
+            secureTextEntry
+            placeholder="Password"
+          />
         </View>
 
         <View style={styles.fullWidth}>
