@@ -1,4 +1,5 @@
 import {
+  Alert,
   StyleSheet,
   Text,
   TextInput,
@@ -10,6 +11,8 @@ import { NativeSyntheticEvent, TextInputChangeEventData } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
 
 const Signup = () => {
   const [name, setName] = useState('');
@@ -49,6 +52,34 @@ const Signup = () => {
     }
   }
 
+  const navigation = useNavigation();
+  function HandleSubmit() {
+    const userData = {
+      name: name,
+      email,
+      password,
+    };
+
+    if (nameVerify && verifyEmail && verifyPassword) {
+      axios
+        .post('http://192.168.1.68:4001/register', userData)
+        .then(res => {
+          console.log(res.data);
+
+          if (res.data.status == 'ok') {
+            Alert.alert('Registered Successfully!');
+            navigation.navigate('Login');
+          } else {
+            Alert.alert('Users already exists!');
+          }
+        })
+
+        .catch(err => console.error(err));
+    } else {
+      Alert.alert('All fields are required');
+    }
+  }
+  console.log('data', HandleSubmit);
   return (
     <LinearGradient
       colors={['#5c6cf8ff', '#1b0388ff']}
@@ -142,7 +173,7 @@ const Signup = () => {
         )}
 
         {/* Signup Button */}
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity onPress={() => HandleSubmit()} style={styles.button}>
           <Text style={styles.buttonText}>Sign Up</Text>
         </TouchableOpacity>
 
