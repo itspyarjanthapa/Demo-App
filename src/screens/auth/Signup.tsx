@@ -1,5 +1,4 @@
 import {
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -7,10 +6,10 @@ import {
   View,
 } from 'react-native';
 import React, { useState } from 'react';
-
+import { NativeSyntheticEvent, TextInputChangeEventData } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const Signup = () => {
   const [name, setName] = useState('');
@@ -19,8 +18,9 @@ const Signup = () => {
   const [verifyEmail, setVerifyEmail] = useState(false);
   const [password, setPassword] = useState('');
   const [verifyPassword, setVerifyPassword] = useState(false);
+  const [showPass, setShowPass] = useState(false);
 
-  function HandleName(e) {
+  function HandleName(e: NativeSyntheticEvent<TextInputChangeEventData>) {
     const nameVar = e.nativeEvent.text;
     setName(nameVar);
     setNameVerify(false);
@@ -29,13 +29,23 @@ const Signup = () => {
     }
   }
 
-  function HandleEmail(e) {
+  function HandleEmail(e: NativeSyntheticEvent<TextInputChangeEventData>) {
     const emailVar = e.nativeEvent.text;
     setEmail(emailVar);
     setVerifyEmail(false);
     if (/^[\w.%+-]+@[\w.-]+\.[a-zA-Z]{1,}$/.test(emailVar)) {
       setEmail(emailVar);
       setVerifyEmail(true);
+    }
+  }
+
+  function HandlePassword(e: NativeSyntheticEvent<TextInputChangeEventData>) {
+    const passVar = e.nativeEvent.text;
+    setPassword(passVar);
+    setVerifyPassword(false);
+    if (/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/.test(passVar)) {
+      setPassword(passVar);
+      setVerifyPassword(true);
     }
   }
 
@@ -46,7 +56,7 @@ const Signup = () => {
     >
       <View style={styles.logoContainer}>
         <View style={styles.icon}>
-          <Icon name="check-circle" size={70} color="white" />
+          <MaterialIcons name="check-circle" size={70} color="white" />
         </View>
 
         <Text style={styles.textHeader}>Create Account</Text>
@@ -102,13 +112,34 @@ const Signup = () => {
           <View style={styles.inputDiv}>
             <FontAwesome name="lock" size={20} color="#5c6cf8ff" />
             <TextInput
+              onChange={e => HandlePassword(e)}
               style={styles.input}
               textContentType="password"
               placeholder="Password"
-              secureTextEntry
+              secureTextEntry={showPass}
             />
           </View>
+          <TouchableOpacity onPress={() => setShowPass(!showPass)}>
+            {password.length < 1 ? null : showPass ? (
+              <FontAwesome
+                name="eye"
+                size={20}
+                color={verifyPassword ? 'green' : 'red'}
+              />
+            ) : (
+              <FontAwesome
+                name="eye-slash"
+                size={20}
+                color={verifyPassword ? 'green' : 'red'}
+              />
+            )}
+          </TouchableOpacity>
         </View>
+        {password.length < 1 ? null : verifyPassword ? null : (
+          <Text style={styles.errorMsg}>
+            Uppercase, Lowercase, Number and 6 or more character.
+          </Text>
+        )}
 
         {/* Signup Button */}
         <TouchableOpacity style={styles.button}>
