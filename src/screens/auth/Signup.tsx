@@ -177,7 +177,11 @@ const Signup = () => {
           <Text style={styles.buttonText}>Sign Up</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('Login');
+          }}
+        >
           <Text style={styles.normalText}>
             Already have an account?{' '}
             <Text style={[styles.normalText, styles.fontWeight]}>Sign in</Text>

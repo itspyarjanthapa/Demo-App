@@ -1,19 +1,40 @@
 import {
+  Alert,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
 
 const Login = () => {
   const navigation = useNavigation();
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  function handleSubmit() {
+    const userData = {
+      email: email,
+      password: password,
+    };
+    axios.post('http://192.168.1.68:4001/login', userData).then(res => {
+      if (res.data.status == 'ok') {
+        Alert.alert('User login successful!');
+        navigation.navigate('TabNavigator');
+      } else {
+        Alert.alert('Login Failed!');
+      }
+    });
+  }
+
   return (
     <LinearGradient
       colors={['#5c6cf8ff', '#1b0388ff']}
@@ -30,19 +51,23 @@ const Login = () => {
         </Text>
 
         <View style={styles.inptufeild}>
-          <FontAwesome name="envelope" size={20} color="#5c6cf8ff" />
+          <FontAwesome name="envelope" size={15} color="#5c6cf8ff" />
           <TextInput
+            style={styles.input}
             textContentType="emailAddress"
             placeholder="Email Address"
+            onChange={e => setEmail(e.nativeEvent.text)}
           />
         </View>
 
         <View style={styles.inptufeild}>
           <FontAwesome name="lock" size={20} color="#5c6cf8ff" />
           <TextInput
+            style={styles.input}
             textContentType="password"
             secureTextEntry
             placeholder="Password"
+            onChange={e => setPassword(e.nativeEvent.text)}
           />
         </View>
 
@@ -52,7 +77,7 @@ const Login = () => {
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={() => handleSubmit()}>
           <Text style={styles.buttonText}>Sign In</Text>
         </TouchableOpacity>
 
@@ -165,5 +190,8 @@ const styles = StyleSheet.create({
     color: '#5c6cf8ff',
     fontSize: 18,
     fontWeight: 400,
+  },
+  input: {
+    width: '90%',
   },
 });
