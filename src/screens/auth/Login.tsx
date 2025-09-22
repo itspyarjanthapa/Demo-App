@@ -13,6 +13,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = () => {
   const navigation = useNavigation();
@@ -28,6 +29,7 @@ const Login = () => {
     axios.post('http://192.168.1.68:4001/login', userData).then(res => {
       if (res.data.status == 'ok') {
         Alert.alert('User login successful!');
+        AsyncStorage.setItem('token', res.data.data);
         navigation.navigate('TabNavigator');
       } else {
         Alert.alert('Login Failed!');
