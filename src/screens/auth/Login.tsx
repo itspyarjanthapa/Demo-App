@@ -27,9 +27,10 @@ const Login = () => {
       password: password,
     };
     axios.post('http://192.168.1.68:4001/login', userData).then(res => {
-      if (res.data.status == 'ok') {
+      if (res.data.status === 'ok') {
         Alert.alert('User login successful!');
         AsyncStorage.setItem('token', res.data.data);
+        AsyncStorage.setItem('isLoggedIn', JSON.stringify(true));
         navigation.navigate('TabNavigator');
       } else {
         Alert.alert('Login Failed!');

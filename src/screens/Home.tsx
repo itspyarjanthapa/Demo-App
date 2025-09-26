@@ -53,7 +53,7 @@ const Home = () => {
 
   return (
     <View style={styles.container}>
-      {/* <Text style={styles.header}>Feed</Text> */}
+      <Text style={styles.header}>Feed</Text>
       <FlatList
         data={posts}
         renderItem={renderItem}

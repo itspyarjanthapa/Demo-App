@@ -1,3 +1,7 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -5,15 +9,19 @@ import {
   Image,
   TouchableOpacity,
   StatusBar,
+  BackHandler,
+  Alert,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+
 import { SafeAreaView } from 'react-native-safe-area-context';
-import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Profile = () => {
+  const navigation = useNavigation();
+
   const handleLogout = () => {
-    // TODO: add your logout logic here (e.g., clear tokens, navigate to login)
+    AsyncStorage.setItem('isLoggedIn', '');
+    AsyncStorage.setItem('token', '');
+    navigation.navigate('userLogin');
     console.log('User logged out');
   };
 
@@ -30,6 +38,33 @@ const Profile = () => {
         setUserData(res.data.data);
       });
   }
+
+  const handleBackPress = () => {
+    Alert.alert('Exit App', 'Are you sure you want to exit?', [
+      {
+        text: 'Cancel',
+        onPress: () => null,
+        style: 'cancel',
+      },
+      {
+        text: 'Exit',
+        onPress: () => BackHandler.exitApp(),
+        style: 'cancel',
+      },
+    ]);
+    return true;
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const backHandler = BackHandler.addEventListener(
+        'hardwareBackPress',
+        handleBackPress,
+      );
+
+      return () => backHandler.remove();
+    }, []),
+  );
 
   useEffect(() => {
     getdata();
@@ -50,8 +85,8 @@ const Profile = () => {
           source={{ uri: 'https://via.placeholder.com/150' }} // Replace with real image
           style={styles.profileImage}
         />
-        <Text style={styles.name}>John Doe</Text>
-        <Text style={styles.email}>johndoe@example.com</Text>
+        <Text style={styles.name}>{userData.name}</Text>
+        <Text style={styles.email}>{userData.email}</Text>
 
         <View style={styles.infoBox}>
           <Text style={styles.label}>Gender</Text>

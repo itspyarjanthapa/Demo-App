@@ -9,11 +9,11 @@ const Tab = createBottomTabNavigator();
 export default function TabNavigator() {
   return (
     <Tab.Navigator
-      screenLayout={Profile}
+      initialRouteName="Home"
       screenOptions={{ headerShown: false }}
     >
-      <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Profile" component={Profile} />
+      <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="User" component={Users} />
     </Tab.Navigator>
   );
