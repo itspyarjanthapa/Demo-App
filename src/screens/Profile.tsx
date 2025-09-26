@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Toast from 'react-native-toast-message';
 
 const Profile = () => {
   const navigation = useNavigation();
@@ -68,6 +69,15 @@ const Profile = () => {
 
   useEffect(() => {
     getdata();
+
+    setTimeout(() => {
+      Toast.show({
+        type: 'success',
+        text1: 'Hello',
+        text2: 'This is some something 👋',
+        visibilityTime: 10000
+      });
+    }, 2000);
   }, []);
 
   return (
