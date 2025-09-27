@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -6,60 +6,85 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
-  Platform,
-  Alert,
 } from 'react-native';
-import * as ImagePicker from 'expo-image-picker'; // for Expo
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import ImagePicker from 'react-native-image-crop-picker';
+import axios from 'axios';
+import { useRoute } from '@react-navigation/native';
 
-export default function UpdateProfile() {
-  const [image, setImage] = useState<string | null>(null);
+const UpdateProfile = () => {
   const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [gender, setGender] = useState('');
   const [profession, setProfession] = useState('');
-
-  // Pick image from gallery
-  const pickImage = async () => {
-    const permissionResult =
-      await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (!permissionResult.granted) {
-      Alert.alert('Permission to access gallery is required!');
-      return;
-    }
-
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.5,
+  const [image, setImage] = useState('');
+  const route = useRoute();
+  const selectImage = () => {
+    ImagePicker.openPicker({
+      width: 400,
+      height: 400,
+      cropping: true,
+      includeBase64: true,
+      cropperCircleOverlay: true,
+      avoidEmptySpaceAroundImage: true,
+      freeStyleCropEnabled: true,
+    }).then(image => {
+      console.log(image);
+      const ImgData = `data:${image.mime};base64,${image.data}`;
+      setImage(ImgData);
     });
-
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-    }
   };
 
-  const handleSave = () => {
-    console.log({ image, name, gender, profession });
-    Alert.alert('Profile updated!');
-    // Here you can send data to backend
+  useEffect(() => {
+    const UserData = route.params.user;
+    setName(UserData.name);
+    setEmail(UserData.email);
+    setGender(UserData.gender);
+    setProfession(UserData.profession);
+    setImage(UserData.image);
+  }, [route.params.data]);
+
+  const updateProfile = () => {
+    const formData = {
+      name: name,
+      email: email,
+      gender: gender,
+      image: image,
+      profession: profession,
+    };
+
+    axios
+      .post('http://192.168.1.68:4001/update-user', formData)
+      .then(res => console.log(res.data));
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Update Profile</Text>
+      <Text style={styles.header}>Edit Profile</Text>
 
-      {/* Profile Image */}
-      <TouchableOpacity onPress={pickImage} style={styles.imageWrapper}>
-        {image ? (
-          <Image source={{ uri: image }} style={styles.profileImage} />
-        ) : (
-          <View style={styles.placeholderImage}>
-            <Text style={styles.placeholderText}>Add Image</Text>
-          </View>
-        )}
+      {/* Image Placeholder */}
+      <TouchableOpacity
+        onPress={() => selectImage()}
+        style={styles.imageContainer}
+      >
+        <Image
+          source={{
+            uri: image
+              ? image
+              : 'https://cdn-icons-png.flaticon.com/512/219/219983.png',
+          }}
+          style={styles.profileImage}
+        />
+        {/* Camera Icon Overlay */}
+        <TouchableOpacity
+          onPress={() => selectImage()}
+          style={styles.cameraIcon}
+        >
+          <Icon name="camera-alt" size={15} color="#fff" />
+        </TouchableOpacity>
       </TouchableOpacity>
 
-      {/* Name */}
+      {/* Input Fields */}
       <TextInput
         style={styles.input}
         placeholder="Name"
@@ -67,17 +92,35 @@ export default function UpdateProfile() {
         value={name}
         onChangeText={setName}
       />
-
-      {/* Gender */}
       <TextInput
         style={styles.input}
-        placeholder="Gender"
+        placeholder="Email"
         placeholderTextColor="#888"
-        value={gender}
-        onChangeText={setGender}
+        value={email}
+        onChangeText={setEmail}
+        keyboardType="email-address"
       />
 
-      {/* Profession */}
+      {/* Gender Selection */}
+      <Text style={styles.label}>Gender</Text>
+      <View style={styles.genderContainer}>
+        {['Male', 'Female', 'Other'].map(option => (
+          <TouchableOpacity
+            key={option}
+            style={styles.radioButton}
+            onPress={() => setGender(option)}
+          >
+            <View
+              style={[
+                styles.radioCircle,
+                gender === option && styles.selectedRadio,
+              ]}
+            />
+            <Text style={styles.radioText}>{option}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
       <TextInput
         style={styles.input}
         placeholder="Profession"
@@ -86,67 +129,103 @@ export default function UpdateProfile() {
         onChangeText={setProfession}
       />
 
-      {/* Save Button */}
-      <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-        <Text style={styles.saveButtonText}>Save</Text>
+      {/* Update Button */}
+      <TouchableOpacity onPress={() => updateProfile()} style={styles.button}>
+        <Text style={styles.buttonText}>Update Profile</Text>
       </TouchableOpacity>
     </View>
   );
-}
+};
+
+export default UpdateProfile;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#131212',
     padding: 20,
-    backgroundColor: '#fff',
+    paddingTop: 60,
   },
-  heading: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#491B6D',
-    marginBottom: 30,
-    textAlign: 'center',
-  },
-  imageWrapper: {
-    alignItems: 'center',
+  header: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: 'white',
     marginBottom: 20,
   },
-  profileImage: {
+  imageContainer: {
     width: 120,
     height: 120,
     borderRadius: 60,
-  },
-  placeholderImage: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: '#491B6D',
+    backgroundColor: '#000000ff',
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: 20,
+    alignSelf: 'center',
   },
-  placeholderText: {
-    color: '#fff',
-    fontWeight: '600',
+  profileImage: {
+    borderWidth: 3,
+    borderColor: '#fff',
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+  },
+  cameraIcon: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    backgroundColor: '#7e86fa',
+    padding: 6,
+    borderRadius: 20,
+    borderWidth: 2,
+    borderColor: '#131212',
   },
   input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 12,
-    padding: Platform.OS === 'ios' ? 15 : 10,
+    backgroundColor: '#1b1b1b',
+    color: 'white',
+    padding: 12,
+    borderRadius: 10,
     marginBottom: 15,
-    fontSize: 16,
-    color: '#000',
   },
-  saveButton: {
-    backgroundColor: '#491B6D',
+  label: {
+    color: 'white',
+    marginBottom: 8,
+    fontWeight: '500',
+  },
+  genderContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 15,
+  },
+  radioButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  radioCircle: {
+    height: 18,
+    width: 18,
+    borderRadius: 9,
+    borderWidth: 2,
+    borderColor: '#7e86fa',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 6,
+  },
+  selectedRadio: {
+    backgroundColor: '#7e86fa',
+  },
+  radioText: {
+    color: 'white',
+  },
+  button: {
+    backgroundColor: '#7e86fa',
     padding: 15,
     borderRadius: 12,
-    alignItems: 'center',
     marginTop: 10,
+    alignItems: 'center',
   },
-  saveButtonText: {
-    color: '#fff',
-    fontSize: 16,
+  buttonText: {
+    color: 'white',
     fontWeight: '600',
+    fontSize: 16,
   },
 });

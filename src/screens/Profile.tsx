@@ -11,8 +11,10 @@ import {
   BackHandler,
   Alert,
 } from 'react-native';
+// import Toast from 'react-native-toast-message';
 
 import IconM from 'react-native-vector-icons/MaterialCommunityIcons';
+import UpdateProfile from './updates/UpdateProfile';
 
 const Profile = () => {
   const navigation = useNavigation();
@@ -84,7 +86,11 @@ const Profile = () => {
       <View style={styles.header}>
         <Text style={styles.headerText}>My Profile</Text>
 
-        <TouchableOpacity onPress={()=>navigation.navigate('UpdateProfile')}>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate('UpdateProfile', { data: userData })
+          }
+        >
           <IconM name="account-edit" size={30} color="white" />;
         </TouchableOpacity>
       </View>
@@ -102,12 +108,12 @@ const Profile = () => {
 
         <View style={styles.infoBox}>
           <Text style={styles.label}>Gender</Text>
-          <Text style={styles.value}>Male</Text>
+          <Text style={styles.value}>{userData.gender || 'N/A'}</Text>
         </View>
 
         <View style={styles.infoBox}>
           <Text style={styles.label}>Profession</Text>
-          <Text style={styles.value}>Software Developer</Text>
+          <Text style={styles.value}>{userData.profession || 'N/A'}</Text>
         </View>
 
         {/* Logout Button */}

@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState } from 'react';
 import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
 import { StatusBar, StyleSheet } from 'react-native';
+import UpdateProfile from './src/screens/updates/UpdateProfile';
 
 const toastConfig = {
   success: (props: any) => (
@@ -42,7 +43,7 @@ const LoginNav = () => {
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="Signup" component={Signup} />
       <Stack.Screen name="TabNavigator" component={TabNavigator} />
-      <Stack.Screen name="userLogin" component={LoginNav} />
+      <Stack.Screen name="UpdateProfile" component={UpdateProfile} />
     </Stack.Navigator>
   );
 };
@@ -58,7 +59,7 @@ const App = () => {
   return (
     <NavigationContainer>
       <StatusBar barStyle={'light-content'} />
-      {isLoggedIn ? <TabNavigator /> : <LoginNav />}
+      <LoginNav />
       <Toast config={toastConfig} ref={ref => Toast.setRef(ref)} />
     </NavigationContainer>
   );
