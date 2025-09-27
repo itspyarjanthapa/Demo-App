@@ -8,13 +8,11 @@ import {
   View,
   Image,
   TouchableOpacity,
-  StatusBar,
   BackHandler,
   Alert,
 } from 'react-native';
 
-import { SafeAreaView } from 'react-native-safe-area-context';
-import Toast from 'react-native-toast-message';
+import IconM from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const Profile = () => {
   const navigation = useNavigation();
@@ -70,29 +68,33 @@ const Profile = () => {
   useEffect(() => {
     getdata();
 
-    setTimeout(() => {
-      Toast.show({
-        type: 'success',
-        text1: 'Hello',
-        text2: 'This is some something 👋',
-        visibilityTime: 10000
-      });
-    }, 2000);
+    // setTimeout(() => {
+    //   Toast.show({
+    //     type: 'success',
+    //     text1: 'Hello',
+    //     text2: 'This is some something 👋',
+    //     visibilityTime: 10000
+    //   });
+    // }, 2000);
   }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle={'dark-content'} />
-
+    <View style={styles.container}>
       {/* Header Section */}
       <View style={styles.header}>
         <Text style={styles.headerText}>My Profile</Text>
+
+        <TouchableOpacity onPress={()=>navigation.navigate('UpdateProfile')}>
+          <IconM name="account-edit" size={30} color="white" />;
+        </TouchableOpacity>
       </View>
 
       {/* Profile Card */}
-      <View style={styles.card}>
+      <View>
         <Image
-          source={{ uri: 'https://via.placeholder.com/150' }} // Replace with real image
+          source={{
+            uri: 'https://cdn.pixabay.com/photo/2022/03/11/06/14/indian-man-7061278_640.jpg',
+          }}
           style={styles.profileImage}
         />
         <Text style={styles.name}>{userData.name}</Text>
@@ -113,7 +115,7 @@ const Profile = () => {
           <Text style={styles.logoutText}>Logout</Text>
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -122,51 +124,41 @@ export default Profile;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f2f7ff', // light blue background
-    padding: 20,
+    backgroundColor: '#131212ff',
+    padding: 15,
   },
   header: {
+    flexDirection: 'row',
     marginTop: 50,
     marginBottom: 20,
-    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   headerText: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#1E3A8A', // dark blue
+    color: 'white',
   },
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: 20,
-    padding: 20,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 5,
-  },
+
   profileImage: {
     width: 120,
     height: 120,
     borderRadius: 60,
     marginBottom: 15,
-    borderWidth: 3,
-    borderColor: '#1E40AF', // blue border
+    objectFit: 'cover',
   },
   name: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#1E3A8A',
+    color: '#ffffffff',
   },
   email: {
     fontSize: 14,
-    color: '#555',
+    color: '#ffffffff',
     marginBottom: 20,
   },
   infoBox: {
     width: '100%',
-    backgroundColor: '#f0f4ff',
+    backgroundColor: '#1b1b1bff',
     padding: 12,
     borderRadius: 12,
     marginTop: 10,
@@ -174,22 +166,21 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#1E3A8A',
+    color: '#0044ffff',
   },
   value: {
     fontSize: 14,
-    color: '#444',
+    color: '#ffffffff',
     marginTop: 2,
   },
   logoutButton: {
     marginTop: 25,
-    backgroundColor: '#1E40AF',
-    paddingVertical: 12,
-    paddingHorizontal: 40,
-    borderRadius: 25,
+    backgroundColor: '#1b1b1bff',
+    padding: 12,
+    borderRadius: 10,
   },
   logoutText: {
-    color: '#fff',
+    color: 'red',
     fontSize: 16,
     fontWeight: '600',
   },

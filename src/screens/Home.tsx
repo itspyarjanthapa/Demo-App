@@ -1,5 +1,13 @@
-import { StyleSheet, Text, View, Image, FlatList } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  FlatList,
+  TouchableOpacity,
+} from 'react-native';
 import React from 'react';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 // Dummy feed data
 const posts = [
@@ -53,11 +61,16 @@ const Home = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Feed</Text>
+      <View style={styles.headerContainer}>
+        <Text style={styles.header}>Insights</Text>
+        <TouchableOpacity>
+          <FontAwesome name="heart-o" size={30} color="white" />;
+        </TouchableOpacity>
+      </View>
       <FlatList
         data={posts}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={item => item.id}
         showsVerticalScrollIndicator={false}
       />
     </View>
@@ -69,19 +82,22 @@ export default Home;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f2f7ff',
+    backgroundColor: '#131212ff',
     paddingHorizontal: 15,
     paddingTop: 50,
   },
   header: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#1E3A8A',
+    color: '#ffffffff',
     marginBottom: 15,
-    textAlign: 'center',
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   postCard: {
-    backgroundColor: '#fff',
+    backgroundColor: '#1b1b1bff',
     borderRadius: 15,
     marginBottom: 20,
     paddingBottom: 10,
@@ -101,12 +117,12 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginRight: 10,
     borderWidth: 2,
-    borderColor: '#1E40AF',
+    borderColor: '#ffffffff',
   },
   username: {
     fontWeight: 'bold',
     fontSize: 14,
-    color: '#1E3A8A',
+    color: '#ffffffff',
   },
   postImage: {
     width: '100%',
@@ -117,13 +133,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginTop: 8,
     fontSize: 14,
-    color: '#333',
+    color: '#ffffffff',
   },
   likes: {
     paddingHorizontal: 10,
     marginTop: 5,
     fontSize: 13,
     fontWeight: '600',
-    color: '#1E40AF',
+    color: '#0365f8ff',
   },
 });

@@ -7,7 +7,7 @@ import TabNavigator from './src/navigation/Tabnavigator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState } from 'react';
 import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
-import { StyleSheet } from 'react-native';
+import { StatusBar, StyleSheet } from 'react-native';
 
 const toastConfig = {
   success: (props: any) => (
@@ -57,6 +57,7 @@ const App = () => {
 
   return (
     <NavigationContainer>
+      <StatusBar barStyle={'light-content'} />
       {isLoggedIn ? <TabNavigator /> : <LoginNav />}
       <Toast config={toastConfig} ref={ref => Toast.setRef(ref)} />
     </NavigationContainer>
