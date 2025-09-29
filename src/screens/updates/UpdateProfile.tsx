@@ -11,6 +11,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import ImagePicker from 'react-native-image-crop-picker';
 import axios from 'axios';
 import { useRoute } from '@react-navigation/native';
+import Toast from 'react-native-toast-message';
 
 const UpdateProfile = () => {
   const [name, setName] = useState('');
@@ -36,13 +37,16 @@ const UpdateProfile = () => {
   };
 
   useEffect(() => {
-    const UserData = route.params.user;
-    setName(UserData.name);
-    setEmail(UserData.email);
-    setGender(UserData.gender);
-    setProfession(UserData.profession);
-    setImage(UserData.image);
-  }, [route.params.data]);
+    if (route.params && (route.params as any).userData) {
+      const UserData = (route.params as any).userData;
+      console.log('am i getting the data???', UserData);
+      setName(UserData.name || '');
+      setEmail(UserData.email || '');
+      setGender(UserData.gender || '');
+      setProfession(UserData.profession || '');
+      setImage(UserData.image || '');
+    }
+  }, [route.params]);
 
   const updateProfile = () => {
     const formData = {
@@ -53,9 +57,16 @@ const UpdateProfile = () => {
       profession: profession,
     };
 
-    axios
-      .post('http://192.168.1.68:4001/update-user', formData)
-      .then(res => console.log(res.data));
+    axios.post('http://192.168.1.68:4001/update-user', formData).then(res => {
+      console.log(res.data);
+      if (res.data.status == 'ok') {
+        Toast.show({
+          type: 'success',
+          text1: 'Updated Successfully!!',
+          visibilityTime: 10000,
+        });
+      }
+    });
   };
 
   return (

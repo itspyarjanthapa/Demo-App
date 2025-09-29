@@ -50,7 +50,7 @@ export default function TabNavigator() {
       screenOptions={{
         headerShown: false,
         tabBarStyle: styles.tabBar,
-        tabBarActiveTintColor: '#7e86faff',
+        tabBarActiveTintColor: '#ffffffff',
         tabBarInactiveTintColor: '#fff',
         tabBarShowLabel: false,
       }}

@@ -14,7 +14,6 @@ import {
 // import Toast from 'react-native-toast-message';
 
 import IconM from 'react-native-vector-icons/MaterialCommunityIcons';
-import UpdateProfile from './updates/UpdateProfile';
 
 const Profile = () => {
   const navigation = useNavigation();
@@ -22,7 +21,7 @@ const Profile = () => {
   const handleLogout = () => {
     AsyncStorage.setItem('isLoggedIn', '');
     AsyncStorage.setItem('token', '');
-    navigation.navigate('userLogin');
+    navigation.navigate('Login');
     console.log('User logged out');
   };
 
@@ -58,6 +57,7 @@ const Profile = () => {
 
   useFocusEffect(
     React.useCallback(() => {
+      getdata();
       const backHandler = BackHandler.addEventListener(
         'hardwareBackPress',
         handleBackPress,
@@ -68,8 +68,6 @@ const Profile = () => {
   );
 
   useEffect(() => {
-    getdata();
-
     // setTimeout(() => {
     //   Toast.show({
     //     type: 'success',
@@ -87,9 +85,7 @@ const Profile = () => {
         <Text style={styles.headerText}>My Profile</Text>
 
         <TouchableOpacity
-          onPress={() =>
-            navigation.navigate('UpdateProfile', { data: userData })
-          }
+          onPress={() => navigation.navigate('UpdateProfile', { userData })}
         >
           <IconM name="account-edit" size={30} color="white" />;
         </TouchableOpacity>
@@ -99,21 +95,29 @@ const Profile = () => {
       <View>
         <Image
           source={{
-            uri: 'https://cdn.pixabay.com/photo/2022/03/11/06/14/indian-man-7061278_640.jpg',
+            uri:
+              userData && userData.image
+                ? userData.image
+                : 'https://cdn-icons-png.flaticon.com/512/219/219983.png',
           }}
           style={styles.profileImage}
         />
-        <Text style={styles.name}>{userData.name}</Text>
-        <Text style={styles.email}>{userData.email}</Text>
+
+        <Text style={styles.name}>{userData.name || "New User"}</Text>
+        <Text style={styles.email}>{userData.email || "user@gmail.com"}</Text>
 
         <View style={styles.infoBox}>
           <Text style={styles.label}>Gender</Text>
-          <Text style={styles.value}>{userData.gender || 'N/A'}</Text>
+          <Text style={styles.value}>
+            {userData.gender || 'N/A'}
+          </Text>
         </View>
 
         <View style={styles.infoBox}>
           <Text style={styles.label}>Profession</Text>
-          <Text style={styles.value}>{userData.profession || 'N/A'}</Text>
+          <Text style={styles.value}>
+            {userData.profession || 'N/A'}
+          </Text>
         </View>
 
         {/* Logout Button */}
@@ -126,7 +130,7 @@ const Profile = () => {
 };
 
 export default Profile;
-
+  
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -151,6 +155,8 @@ const styles = StyleSheet.create({
     borderRadius: 60,
     marginBottom: 15,
     objectFit: 'cover',
+    borderColor: '#fff',
+    borderWidth: 3,
   },
   name: {
     fontSize: 20,
