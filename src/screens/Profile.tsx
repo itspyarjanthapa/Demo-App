@@ -11,7 +11,6 @@ import {
   BackHandler,
   Alert,
 } from 'react-native';
-// import Toast from 'react-native-toast-message';
 
 import IconM from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -103,21 +102,17 @@ const Profile = () => {
           style={styles.profileImage}
         />
 
-        <Text style={styles.name}>{userData.name || "New User"}</Text>
-        <Text style={styles.email}>{userData.email || "user@gmail.com"}</Text>
+        <Text style={styles.name}>{userData.name || 'New User'}</Text>
+        <Text style={styles.email}>{userData.email || 'user@gmail.com'}</Text>
 
         <View style={styles.infoBox}>
           <Text style={styles.label}>Gender</Text>
-          <Text style={styles.value}>
-            {userData.gender || 'N/A'}
-          </Text>
+          <Text style={styles.value}>{userData.gender || 'N/A'}</Text>
         </View>
 
         <View style={styles.infoBox}>
           <Text style={styles.label}>Profession</Text>
-          <Text style={styles.value}>
-            {userData.profession || 'N/A'}
-          </Text>
+          <Text style={styles.value}>{userData.profession || 'N/A'}</Text>
         </View>
 
         {/* Logout Button */}
@@ -130,7 +125,7 @@ const Profile = () => {
 };
 
 export default Profile;
-  
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

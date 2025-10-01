@@ -9,7 +9,6 @@ import Users from '../screens/Users';
 
 const Tab = createBottomTabNavigator();
 
-// --- Move icon components outside the TabNavigator ---
 function HomeIcon({ focused, color, size }: any) {
   return (
     <IconM

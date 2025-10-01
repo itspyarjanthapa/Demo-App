@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import {
@@ -9,57 +10,42 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-const dummyUsers = [
-  {
-    id: '1',
-    name: 'John Doe',
-    email: 'johndoe@example.com',
-    gender: 'Male',
-    profession: 'Software Engineer',
-    image: 'https://randomuser.me/api/portraits/men/32.jpg',
-  },
-  {
-    id: '2',
-    name: 'Sarah Smith',
-    email: 'sarahsmith@example.com',
-    gender: 'Female',
-    profession: 'UI/UX Designer',
-    image: 'https://randomuser.me/api/portraits/women/44.jpg',
-  },
-  {
-    id: '3',
-    name: 'Mike Johnson',
-    email: 'mikej@example.com',
-    gender: 'Male',
-    profession: 'Project Manager',
-    image: 'https://randomuser.me/api/portraits/men/12.jpg',
-  },
-  {
-    id: '4',
-    name: 'Emma Brown',
-    email: 'emmab@example.com',
-    gender: 'Female',
-    profession: 'Data Analyst',
-    image: 'https://randomuser.me/api/portraits/women/68.jpg',
-  },
-];
+const Users = () => {
+  const [userData, setUserData] = useState<any[]>([]);
 
-// const Users = () => {
-//   const [userData, setuserData] = useState();
+  async function getAllData() {
+    try {
+      const res = await axios.get('http://192.168.1.68:4001/getAll-users');
 
-//   async function getallData() {
-//     axios.get('http://192.168.1.68:4001/getAll-users').then(res => {
-//       console.log(res.data);
-//     });
-//   }
+      if (Array.isArray(res.data.data)) {
+        const loggedInUserEmail = await AsyncStorage.getItem('userEmail');
 
-  // useEffect(() => {
-  //   getallData();
-  // });
+        const filteredUsers = res.data.data.filter(
+          (user: any) => user.email !== loggedInUserEmail,
+        );
+
+        setUserData(filteredUsers);
+      }
+    } catch (error: any) {
+      console.log('Error fetching users:', error.message);
+    }
+  }
+
+  useEffect(() => {
+    getAllData();
+  }, []);
 
   const renderUser = ({ item }: { item: any }) => (
     <View style={styles.card}>
-      <Image source={{ uri: item.image }} style={styles.avatar} />
+      <Image
+        source={{
+          uri:
+            item.image && item.image !== ''
+              ? item.image
+              : 'https://cdn-icons-png.flaticon.com/512/219/219983.png',
+        }}
+        style={styles.avatar}
+      />
       <View style={styles.info}>
         <Text style={styles.name}>{item.name}</Text>
         <Text style={styles.email}>{item.email}</Text>
@@ -71,14 +57,14 @@ const dummyUsers = [
       </TouchableOpacity>
     </View>
   );
-
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Find your friends</Text>
+
       <FlatList
-        data={dummyUsers}
+        data={userData}
         renderItem={renderUser}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item._id}
         showsVerticalScrollIndicator={false}
       />
     </View>
@@ -113,6 +99,7 @@ const styles = StyleSheet.create({
     height: 60,
     borderRadius: 30,
     marginRight: 15,
+    backgroundColor: '#333',
   },
   info: {
     flex: 1,
